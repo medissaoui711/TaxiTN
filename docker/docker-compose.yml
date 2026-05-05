@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgis/postgis:15-3.4
+    container_name: taxitn-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-taxitn}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-taxitn123}
+      POSTGRES_DB: ${DB_NAME:-taxitn}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    networks:
+      - taxitn-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taxitn -d taxitn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache & Pub/Sub
+  redis:
+    image: redis:7-alpine
+    container_name: taxitn-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - taxitn-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Go Backend API
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile
+    container_name: taxitn-backend
+    restart: unless-stopped
+    environment:
+      - ENV=${ENV:-development}
+      - PORT=${PORT:-8080}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-taxitn}
+      - DB_PASSWORD=${DB_PASSWORD:-taxitn123}
+      - DB_NAME=${DB_NAME:-taxitn}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-taxitn-secret-key-change-in-production}
+      - JWT_EXPIRY=24h
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - taxitn-network
+    volumes:
+      - ../backend:/app
+    command: air -c .air.toml
+
+  # pgAdmin (اختياري - لإدارة PostgreSQL)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: taxitn-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@taxitn.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "5050:80"
+    networks:
+      - taxitn-network
+    depends_on:
+      - postgres
+
+  # Redis Insight (اختياري - لإدارة Redis)
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: taxitn-redisinsight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    networks:
+      - taxitn-network
+    depends_on:
+      - redis
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  taxitn-network:
+    driver: bridge
