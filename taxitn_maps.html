@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كريم – خرائط وتتبع</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--green:#3DC56A;--green-dark:#2aa855;--green-light:#e8f9ee;--black:#0a0a0a;--gray:#6b7280;--light:#f8fafc;--white:#fff;--shadow:0 8px 32px rgba(0,0,0,.12);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Tajawal',sans-serif;background:var(--white);color:var(--black);overflow:hidden;height:100vh;}
+.app-shell{display:grid;grid-template-columns:390px 1fr;height:100vh;}
+/* SIDEBAR */
+.sidebar{background:#fff;display:flex;flex-direction:column;overflow:hidden;border-left:1px solid #e5e7eb;z-index:10;}
+.sidebar-header{padding:16px 20px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.logo{font-size:22px;font-weight:900;color:var(--green);}
+.logo span{color:var(--black);}
+.sidebar-body{flex:1;overflow-y:auto;padding:18px;}
+/* TABS */
+.tab-nav{display:flex;gap:4px;margin-bottom:18px;background:var(--light);border-radius:12px;padding:4px;}
+.tab-nav button{flex:1;padding:9px 4px;border:none;background:transparent;font-family:'Tajawal',sans-serif;font-weight:700;font-size:12px;cursor:pointer;border-radius:8px;color:var(--gray);transition:all .2s;}
+.tab-nav button.active{background:#fff;color:var(--green);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+/* INPUTS */
+.loc-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.loc-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.loc-dot.o{background:var(--green);border:2px solid var(--green-dark);}
+.loc-dot.d{background:#ef4444;border:2px solid #dc2626;}
+.loc-input{flex:1;padding:11px 40px 11px 14px;border:2px solid #e5e7eb;border-radius:11px;font-family:'Tajawal',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.loc-input:focus{border-color:var(--green);}
+.pin-btn{position:absolute;left:10px;width:26px;height:26px;border-radius:7px;border:none;background:var(--green-light);color:var(--green);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pin-btn:hover{background:var(--green);color:#fff;}
+.input-wrap{position:relative;flex:1;}
+.connector{width:2px;height:20px;background:#ddd;margin-right:5px;flex-shrink:0;}
+/* SUGGESTIONS */
+.sugg-box{background:#fff;border:1.5px solid #e5e7eb;border-radius:11px;margin-bottom:10px;overflow:hidden;display:none;}
+.sugg-item{padding:11px 14px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;border-bottom:1px solid #f3f4f6;transition:background .15s;}
+.sugg-item:last-child{border-bottom:none;}
+.sugg-item:hover{background:var(--light);}
+/* ROUTE INFO */
+.route-box{background:var(--light);border-radius:13px;padding:14px;margin-bottom:14px;display:none;}
+.route-box.show{display:block;}
+.r-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.r-row:last-child{margin-bottom:0;}
+.r-label{color:var(--gray);font-size:13px;}
+.r-val{font-size:16px;font-weight:800;}
+.r-val.price{color:var(--green);font-size:20px;}
+/* CAR CARDS */
+.cars-label{font-size:11px;font-weight:700;color:var(--gray);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;}
+.cars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+.car-card{border:2px solid #e5e7eb;border-radius:13px;padding:11px 6px;text-align:center;cursor:pointer;transition:all .2s;}
+.car-card.sel{border-color:var(--green);background:var(--green-light);}
+.car-card .ce{font-size:26px;margin-bottom:3px;}
+.car-card .cn{font-size:11px;font-weight:700;}
+.car-card .cp{font-size:11px;color:var(--gray);margin-top:1px;}
+.car-card .ceta{font-size:10px;color:var(--green);font-weight:700;}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);background:var(--light);border-radius:12px;padding:12px;margin-bottom:14px;text-align:center;}
+.s-item{padding:0 6px;border-left:1px solid #e5e7eb;}
+.s-item:last-child{border-left:none;}
+.s-val{font-size:15px;font-weight:900;color:var(--green);}
+.s-lbl{font-size:10px;color:var(--gray);}
+/* BOOK BTN */
+.btn-loc{width:100%;margin-bottom:12px;padding:11px;border-radius:11px;border:2px solid #e5e7eb;background:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;cursor:pointer;color:var(--gray);transition:all .2s;}
+.btn-loc:hover{border-color:var(--green);color:var(--green);}
+/* CONFIRM FOOTER */
+.confirm-footer{padding:14px 18px;border-top:1px solid #e5e7eb;flex-shrink:0;}
+.btn-book{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:13px;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(61,197,106,.35);transition:all .2s;}
+.btn-book:hover{background:var(--green-dark);transform:translateY(-1px);}
+/* TRACK */
+.track-hdr{background:linear-gradient(135deg,#0a1f0a,#163016);border-radius:15px;padding:18px;margin-bottom:14px;color:#fff;}
+.track-status{display:inline-flex;align-items:center;gap:6px;background:rgba(61,197,106,.2);border:1px solid rgba(61,197,106,.4);color:var(--green);padding:4px 12px;border-radius:50px;font-size:11px;font-weight:700;margin-bottom:12px;}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.4s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.driver-row{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border-radius:11px;padding:12px;}
+.d-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:22px;}
+.d-info h4{font-size:14px;font-weight:700;margin-bottom:2px;}
+.d-info p{font-size:11px;opacity:.6;}
+.d-rating{margin-right:auto;text-align:left;}
+.d-rating .score{font-size:18px;font-weight:900;}
+.eta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.eta-card{background:var(--light);border-radius:11px;padding:12px;text-align:center;}
+.eta-val{font-size:20px;font-weight:900;color:var(--green);}
+.eta-lbl{font-size:10px;color:var(--gray);margin-top:2px;}
+.route-summary{background:var(--light);border-radius:13px;padding:14px;margin-bottom:14px;}
+.route-summary h4{font-size:11px;font-weight:700;color:var(--gray);margin-bottom:10px;text-transform:uppercase;}
+.rp{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.rp:last-child{margin-bottom:0;}
+.rp-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.rp-text{font-size:13px;font-weight:600;}
+.rp-sub{font-size:11px;color:var(--gray);}
+.actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.act-btn{padding:10px;border-radius:11px;border:2px solid #e5e7eb;background:#fff;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;}
+.act-btn:hover{border-color:var(--green);color:var(--green);}
+.cancel-btn{width:100%;padding:11px;border-radius:11px;border:2px solid #fecaca;background:#fff5f5;color:#ef4444;font-family:'Tajawal',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.cancel-btn:hover{background:#fee2e2;}
+/* DRIVERS TAB */
+.drv-item{display:flex;align-items:center;gap:10px;background:var(--light);border-radius:12px;padding:11px;margin-bottom:8px;cursor:pointer;transition:all .2s;border:2px solid transparent;}
+.drv-item:hover,.drv-item.hl{border-color:var(--green);background:var(--green-light);}
+.drv-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.drv-inf{flex:1;}
+.drv-inf h5{font-size:13px;font-weight:700;margin-bottom:1px;}
+.drv-inf p{font-size:11px;color:var(--gray);}
+.drv-meta{text-align:left;font-size:11px;}
+.drv-rating{font-weight:700;}
+.drv-dist{color:var(--green);font-weight:600;}
+/* MAP */
+.map-wrap{position:relative;}
+#map{width:100%;height:100vh;}
+.map-ctrl-tr{position:absolute;top:14px;right:14px;z-index:1000;display:flex;flex-direction:column;gap:7px;}
+.map-ctrl-br{position:absolute;bottom:20px;right:14px;z-index:1000;display:flex;flex-direction:column;gap:7px;}
+.mb{width:40px;height:40px;border-radius:11px;border:none;background:#fff;box-shadow:var(--shadow);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mb:hover,.mb.on{background:var(--green);color:#fff;}
+.mode-bar{position:absolute;top:14px;left:50%;transform:translateX(50%);z-index:1000;background:#111;color:#fff;padding:9px 18px;border-radius:50px;font-size:12px;font-weight:700;display:none;align-items:center;gap:7px;box-shadow:var(--shadow);}
+.mode-bar.show{display:flex;}
+.mb-dot{width:9px;height:9px;border-radius:50%;}
+/* TOAST */
+#toast{position:fixed;bottom:22px;right:50%;transform:translateX(50%) translateY(120px);background:#111;color:#fff;padding:11px 22px;border-radius:50px;font-size:13px;font-weight:600;z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
+#toast.show{transform:translateX(50%) translateY(0);}
+/* Custom markers */
+.u-icon{width:28px;height:28px;background:#3B82F6;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 0 0 5px rgba(59,130,246,.2);}
+.d-icon{width:32px;height:32px;background:#ef4444;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(239,68,68,.4);}
+.d-icon span{transform:rotate(45deg);font-size:14px;}
+.c-icon{width:34px;height:34px;background:var(--green);border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(61,197,106,.5);}
+.c-icon.anim{animation:cpulse 1.8s infinite;}
+@keyframes cpulse{0%,100%{box-shadow:0 4px 12px rgba(61,197,106,.5);}50%{box-shadow:0 4px 22px rgba(61,197,106,.9),0 0 0 10px rgba(61,197,106,.08);}}
+@media(max-width:768px){.app-shell{grid-template-columns:1fr;grid-template-rows:45vh 1fr;}.sidebar{border-radius:20px 20px 0 0;border:none;box-shadow:0 -4px 24px rgba(0,0,0,.1);}#map{height:45vh;}}
+</style>
+</head>
+<body>
+<div id="toast"><span id="ti">✅</span> <span id="tm"></span></div>
+
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div>
+        <div class="logo">care<span>em</span></div>
+        <div style="font-size:10px;color:var(--gray);font-weight:600">الخرائط والتتبع المباشر</div>
+      </div>
+      <button id="themeBtn" style="margin-right:auto;padding:7px 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:12px;cursor:pointer;" onclick="toggleTheme()">🌙 ليلي</button>
+    </div>
+
+    <div class="sidebar-body">
+      <div class="tab-nav">
+        <button class="active" onclick="goTab(this,'book')">🚗 احجز رحلة</button>
+        <button onclick="goTab(this,'track')">📍 تتبع السائق</button>
+        <button onclick="goTab(this,'drivers')">👨‍✈️ السائقون</button>
+      </div>
+
+      <!-- BOOK TAB -->
+      <div class="tab-panel active" id="tab-book">
+        <div class="loc-row">
+          <div class="loc-dot o"></div>
+          <div class="input-wrap">
+            <input class="loc-input" id="oInput" placeholder="📍 من أين؟" autocomplete="off"
+              oninput="onLocInput(this,'o')" onfocus="setMode('o')">
+            <button class="pin-btn" onclick="pinMap('o')" title="حدد على الخريطة">📌</button>
+          </div>
+        </div>
+        <div style="display:flex"><div style="width:20px"></div><div class="connector"></div></div>
+        <div class="loc-row">
+          <div class="loc-dot d"></div>
+          <div class="input-wrap">
+            <input class="loc-input" id="dInput" placeholder="🎯 إلى أين؟" autocomplete="off"
+              oninput="onLocInput(this,'d')" onfocus="setMode('d')">
+            <button class="pin-btn" onclick="pinMap('d')" title="حدد على الخريطة">📌</button>
+          </div>
+        </div>
+        <div class="sugg-box" id="suggBox"></div>
+
+        <button class="btn-loc" onclick="useMyLocation()">📍 استخدام موقعي الحالي</button>
+
+        <div class="route-box" id="routeBox">
+          <div class="r-row"><span class="r-label">المسافة</span><span class="r-val" id="rDist">—</span></div>
+          <div class="r-row"><span class="r-label">الوقت المتوقع</span><span class="r-val" id="rTime">—</span></div>
+          <div class="r-row"><span class="r-label">السعر</span><span class="r-val price" id="rPrice">—</span></div>
+        </div>
+
+        <div class="cars-label">اختر نوع السيارة</div>
+        <div class="cars-grid">
+          <div class="car-card sel" onclick="pickCar(this,1,'GO')">
+            <div class="ce">🚗</div><div class="cn">كريم GO</div>
+            <div class="cp" id="p0">AED —</div><div class="ceta">⚡ 4 دق</div>
+          </div>
+          <div class="car-card" onclick="pickCar(this,1.6,'Business')">
+            <div class="ce">🚙</div><div class="cn">Business</div>
+            <div class="cp" id="p1">AED —</div><div class="ceta">⚡ 6 دق</div>
+          </div>
+          <div class="car-card" onclick="pickCar(this,2.2,'MAX')">
+            <div class="ce">🚐</div><div class="cn">MAX</div>
+            <div class="cp" id="p2">AED —</div><div class="ceta">⚡ 9 دق</div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="s-item"><div class="s-val">8</div><div class="s-lbl">سائق قريب</div></div>
+          <div class="s-item"><div class="s-val">4 دق</div><div class="s-lbl">متوسط الوصول</div></div>
+          <div class="s-item"><div class="s-val">4.9⭐</div><div class="s-lbl">التقييم</div></div>
+        </div>
+      </div>
+
+      <!-- TRACK TAB -->
+      <div class="tab-panel" id="tab-track">
+        <div class="track-hdr">
+          <div class="track-status"><div class="pulse-dot"></div>السائق في الطريق</div>
+          <div class="driver-row">
+            <div class="d-avatar">👨‍✈️</div>
+            <div class="d-info">
+              <h4>محمد الأحمدي</h4>
+              <p>Toyota Camry 2023 · أبيض · A-12345</p>
+            </div>
+            <div class="d-rating"><div>⭐⭐⭐⭐⭐</div><div class="score">4.95</div></div>
+          </div>
+        </div>
+        <div class="eta-grid">
+          <div class="eta-card"><div class="eta-val" id="etaMin">—</div><div class="eta-lbl">دقيقة للوصول</div></div>
+          <div class="eta-card"><div class="eta-val" id="etaKm">—</div><div class="eta-lbl">كم متبقي</div></div>
+          <div class="eta-card"><div class="eta-val" id="etaPrice">—</div><div class="eta-lbl">السعر</div></div>
+        </div>
+        <div class="route-summary">
+          <h4>تفاصيل المسار</h4>
+          <div class="rp"><div class="rp-dot" style="background:var(--green)"></div><div><div class="rp-text" id="trackO">—</div><div class="rp-sub">نقطة الانطلاق</div></div></div>
+          <div style="width:2px;height:16px;background:#ddd;margin:3px 0 3px 5px"></div>
+          <div class="rp"><div class="rp-dot" style="background:#ef4444"></div><div><div class="rp-text" id="trackD">—</div><div class="rp-sub">الوجهة</div></div></div>
+        </div>
+        <div class="actions-grid">
+          <button class="act-btn" onclick="toast('جاري الاتصال بمحمد...','📞')">📞 اتصال</button>
+          <button class="act-btn" onclick="shareMyLoc()">📤 مشاركة موقعي</button>
+          <button class="act-btn" onclick="toast('تم إرسال الملاحظة للسائق','📝')">📝 ملاحظة</button>
+          <button class="act-btn" onclick="toast('تم إبلاغ فريق الطوارئ','🚨')">🚨 طوارئ</button>
+        </div>
+        <button class="cancel-btn" onclick="cancelRide()">إلغاء الرحلة</button>
+      </div>
+
+      <!-- DRIVERS TAB -->
+      <div class="tab-panel" id="tab-drivers">
+        <div style="font-size:13px;font-weight:800;margin-bottom:12px">السائقون القريبون</div>
+        <div id="driversList"></div>
+      </div>
+    </div>
+
+    <div class="confirm-footer">
+      <button class="btn-book" onclick="confirmRide()">🚗 تأكيد الحجز</button>
+    </div>
+  </aside>
+
+  <!-- MAP -->
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="mode-bar" id="modeBar">
+      <div class="mb-dot" id="modeDot" style="background:var(--green)"></div>
+      <span id="modeTxt">انقر على الخريطة</span>
+    </div>
+    <div class="map-ctrl-tr">
+      <button class="mb" onclick="locateMe()" title="موقعي">📍</button>
+      <button class="mb" onclick="G.map.zoomIn()" title="تكبير">＋</button>
+      <button class="mb" onclick="G.map.zoomOut()" title="تصغير">－</button>
+    </div>
+    <div class="map-ctrl-br">
+      <button class="mb" id="drvBtn" onclick="toggleDrivers()" title="السائقون">🚗</button>
+      <button class="mb" onclick="fitAll()" title="عرض المسار">🗺️</button>
+    </div>
+  </div>
+</div>
+
+<!-- Load Leaflet THEN run app -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// ALL STATE in one object – no hoisting issues
+// ═══════════════════════════════════════════
+const G = {
+  map: null,
+  tileLight: null,
+  tileDark: null,
+  isDark: false,
+  pickMode: null,       // 'o' | 'd'
+  oMarker: null,
+  dMarker: null,
+  routeLine: null,
+  carMarker: null,
+  carPath: [],
+  trackTimer: null,
+  trackIdx: 0,
+  baseDist: 0,
+  baseTime: 0,
+  carMultiplier: 1,
+  carName: 'GO',
+  driversVisible: true,
+  driverMarkers: [],
+  suggMode: null,
+  suggTimer: null,
+};
+
+const DUBAI = [25.2048, 55.2708];
+
+// ── FAKE DRIVERS ──
+const DRIVERS = [
+  {id:0,name:'محمد الأحمدي',car:'Toyota Camry',color:'أبيض',rating:4.95,lat:25.2080,lng:55.2650,emoji:'🚗',eta:'4 دقائق'},
+  {id:1,name:'أحمد العلي',car:'Hyundai Sonata',color:'رمادي',rating:4.87,lat:25.2110,lng:55.2780,emoji:'🚙',eta:'6 دقائق'},
+  {id:2,name:'عمر الحسن',car:'Nissan Altima',color:'أسود',rating:4.92,lat:25.1990,lng:55.2720,emoji:'🚗',eta:'5 دقائق'},
+  {id:3,name:'علي المنصور',car:'Kia Sportage',color:'أزرق',rating:4.78,lat:25.2150,lng:55.2600,emoji:'🚐',eta:'8 دقائق'},
+  {id:4,name:'سعيد الزهراني',car:'Toyota Corolla',color:'أبيض',rating:4.89,lat:25.2020,lng:55.2820,emoji:'🚗',eta:'7 دقائق'},
+  {id:5,name:'فهد البلوشي',car:'Honda Accord',color:'فضي',rating:4.94,lat:25.2060,lng:55.2550,emoji:'🚙',eta:'3 دقائق'},
+  {id:6,name:'يوسف النعيمي',car:'Mitsubishi Pajero',color:'أبيض',rating:4.82,lat:25.2130,lng:55.2850,emoji:'🚐',eta:'9 دقائق'},
+  {id:7,name:'حمد الكعبي',car:'Lexus ES',color:'أسود',rating:4.98,lat:25.1970,lng:55.2680,emoji:'🚗',eta:'5 دقائق'},
+];
+
+// Dubai landmarks for demo
+const LANDMARKS = [
+  {name:'برج خليفة',lat:25.1972,lng:55.2744},
+  {name:'دبي مول',lat:25.1978,lng:55.2796},
+  {name:'مطار دبي الدولي',lat:25.2532,lng:55.3657},
+  {name:'نخلة جميرا',lat:25.1124,lng:55.1390},
+  {name:'برج العرب',lat:25.1412,lng:55.1851},
+  {name:'شارع الشيخ زايد',lat:25.2137,lng:55.2840},
+  {name:'مدينة دبي للإنترنت',lat:25.1002,lng:55.1746},
+  {name:'ديرة دبي',lat:25.2692,lng:55.3119},
+  {name:'سوق الذهب',lat:25.2685,lng:55.3067},
+  {name:'جميرا بيتش',lat:25.2084,lng:55.2375},
+  {name:'وسط مدينة دبي',lat:25.2048,lng:55.2708},
+  {name:'مرسى دبي',lat:25.0806,lng:55.1404},
+];
+
+// ── ICONS ──
+function mkIcon(html, size) {
+  return L.divIcon({html, iconSize:size, iconAnchor:[size[0]/2, size[1]/2], className:''});
+}
+const ICON_USER = mkIcon('<div class="u-icon">👤</div>', [28,28]);
+const ICON_DEST = mkIcon('<div class="d-icon"><span>📍</span></div>', [32,32]);
+function carIcon(deg) {
+  return mkIcon(`<div class="c-icon anim" style="transform:rotate(${deg}deg)">🚗</div>`, [34,34]);
+}
+function miniCarIcon(emoji) {
+  return mkIcon(`<div style="background:#fff;border:2px solid var(--green);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15)">${emoji}</div>`, [28,28]);
+}
+
+// ══════════════════════════════════
+// INIT – called after Leaflet loads
+// ══════════════════════════════════
+function initApp() {
+  G.tileLight = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:19});
+  G.tileDark  = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:19});
+
+  G.map = L.map('map', {zoomControl:false}).setView(DUBAI, 13);
+  G.tileLight.addTo(G.map);
+
+  G.map.on('click', onMapClick);
+
+  placeDrivers();
+  buildDriversList();
+
+  // Demo: pre-set origin
+  setTimeout(() => {
+    const lm = LANDMARKS[0]; // Burj Khalifa
+    setOriginAt(lm.lat, lm.lng, lm.name);
+    toast('انقر على الخريطة لتحديد الوجهة، أو اكتب في الحقل 🗺️', '📍');
+  }, 600);
+}
+
+// ══════════ MAP CLICK ══════════
+function onMapClick(e) {
+  if (!G.pickMode) return;
+  const {lat, lng} = e.latlng;
+  hideSugg();
+  reverseGeo(lat, lng).then(name => {
+    if (G.pickMode === 'o') {
+      setOriginAt(lat, lng, name);
+    } else {
+      setDestAt(lat, lng, name);
+    }
+    G.pickMode = null;
+    document.getElementById('modeBar').classList.remove('show');
+    if (G.oMarker && G.dMarker) calcRoute();
+  });
+}
+
+// ══════════ MARKERS ══════════
+function setOriginAt(lat, lng, name) {
+  if (G.oMarker) G.map.removeLayer(G.oMarker);
+  G.oMarker = L.marker([lat, lng], {icon: ICON_USER}).addTo(G.map)
+    .bindPopup('📍 ' + name);
+  document.getElementById('oInput').value = name;
+}
+function setDestAt(lat, lng, name) {
+  if (G.dMarker) G.map.removeLayer(G.dMarker);
+  G.dMarker = L.marker([lat, lng], {icon: ICON_DEST}).addTo(G.map)
+    .bindPopup('🎯 ' + name).openPopup();
+  document.getElementById('dInput').value = name;
+}
+
+// ══════════ PICK MODE ══════════
+function setMode(mode) {
+  G.pickMode = mode;
+}
+function pinMap(mode) {
+  G.pickMode = mode;
+  const bar = document.getElementById('modeBar');
+  const dot = document.getElementById('modeDot');
+  const txt = document.getElementById('modeTxt');
+  dot.style.background = mode === 'o' ? 'var(--green)' : '#ef4444';
+  txt.textContent = mode === 'o' ? 'انقر لتحديد نقطة الانطلاق' : 'انقر لتحديد الوجهة';
+  bar.classList.add('show');
+  setTimeout(() => bar.classList.remove('show'), 5000);
+  toast('انقر على الخريطة لتحديد ' + (mode==='o'?'الانطلاق':'الوجهة'), '📌');
+}
+
+// ══════════ GEOCODING (Nominatim) ══════════
+async function reverseGeo(lat, lng) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ar`, {headers:{'Accept-Language':'ar'}});
+    const d = await r.json();
+    return d.display_name ? d.display_name.split(',').slice(0,2).join('،') : `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } catch {
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  }
+}
+
+async function forwardGeo(q) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=ae,sa,eg,qa,kw&limit=5&accept-language=ar`);
+    return await r.json();
+  } catch { return []; }
+}
+
+// ══════════ SUGGESTIONS ══════════
+function onLocInput(input, mode) {
+  G.suggMode = mode;
+  clearTimeout(G.suggTimer);
+  const q = input.value.trim();
+  if (q.length < 2) { hideSugg(); return; }
+
+  // Instant local match
+  const local = LANDMARKS.filter(l => l.name.includes(q));
+  if (local.length) { showSugg(local.map(l => ({name:l.name, lat:l.lat, lng:l.lng})), mode); }
+
+  // Remote search after delay
+  G.suggTimer = setTimeout(async () => {
+    const remote = await forwardGeo(q);
+    if (remote.length) {
+      showSugg(remote.map(r => ({
+        name: r.display_name ? r.display_name.split(',').slice(0,2).join('،') : r.name,
+        lat: parseFloat(r.lat),
+        lng: parseFloat(r.lon)
+      })), mode);
+    }
+  }, 500);
+}
+
+function showSugg(items, mode) {
+  const box = document.getElementById('suggBox');
+  box.innerHTML = items.slice(0,5).map((it,i) =>
+    `<div class="sugg-item" onclick="pickSugg(${i})">
+      <span>${mode==='o'?'📍':'🎯'}</span>
+      <span>${it.name}</span>
+    </div>`
+  ).join('');
+  box._items = items;
+  box.style.display = 'block';
+}
+
+function pickSugg(i) {
+  const box = document.getElementById('suggBox');
+  const it = box._items[i];
+  hideSugg();
+  if (G.suggMode === 'o') {
+    setOriginAt(it.lat, it.lng, it.name);
+  } else {
+    setDestAt(it.lat, it.lng, it.name);
+    G.map.setView([it.lat, it.lng], 14, {animate:true});
+  }
+  if (G.oMarker && G.dMarker) calcRoute();
+}
+
+function hideSugg() {
+  document.getElementById('suggBox').style.display = 'none';
+}
+
+// ══════════ ROUTE (OSRM) ══════════
+async function calcRoute() {
+  if (!G.oMarker || !G.dMarker) return;
+  const o = G.oMarker.getLatLng();
+  const d = G.dMarker.getLatLng();
+  if (G.routeLine) G.map.removeLayer(G.routeLine);
+  toast('جاري حساب المسار...', '🗺️');
+  try {
+    const url = `https://router.project-osrm.org/route/v1/driving/${o.lng},${o.lat};${d.lng},${d.lat}?overview=full&geometries=geojson`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.routes && data.routes.length) {
+      const route = data.routes[0];
+      const coords = route.geometry.coordinates.map(c => L.latLng(c[1], c[0]));
+      G.carPath = coords;
+      G.routeLine = L.polyline(coords, {color:'#3DC56A', weight:5, opacity:.85, lineCap:'round'}).addTo(G.map);
+      // dashed white overlay
+      L.polyline(coords, {color:'#fff', weight:2, opacity:.45, dashArray:'8 14'}).addTo(G.map);
+      G.map.fitBounds(L.latLngBounds(coords).pad(.15), {animate:true});
+      G.baseDist = parseFloat((route.distance / 1000).toFixed(1));
+      G.baseTime = Math.ceil(route.duration / 60);
+      updatePrices();
+      toast(`✅ المسار: ${G.baseDist} كم · ${G.baseTime} دقيقة`, '🗺️');
+    }
+  } catch {
+    // Fallback: straight line
+    const coords = [G.oMarker.getLatLng(), G.dMarker.getLatLng()];
+    G.carPath = coords;
+    G.routeLine = L.polyline(coords, {color:'#3DC56A', weight:4, opacity:.7, dashArray:'10 8'}).addTo(G.map);
+    G.map.fitBounds(L.latLngBounds(coords).pad(.2), {animate:true});
+    G.baseDist = parseFloat((G.oMarker.getLatLng().distanceTo(G.dMarker.getLatLng())/1000).toFixed(1));
+    G.baseTime = Math.ceil(G.baseDist * 3);
+    updatePrices();
+    toast('تم رسم المسار (وضع غير متصل بالشبكة)', '✅');
+  }
+}
+
+function updatePrices() {
+  if (!G.baseDist) return;
+  const base = G.baseDist * 2.5 + 10;
+  document.getElementById('p0').textContent = 'AED ' + (base * 1).toFixed(0);
+  document.getElementById('p1').textContent = 'AED ' + (base * 1.6).toFixed(0);
+  document.getElementById('p2').textContent = 'AED ' + (base * 2.2).toFixed(0);
+  document.getElementById('rDist').textContent = G.baseDist + ' كم';
+  document.getElementById('rTime').textContent = G.baseTime + ' دقيقة';
+  document.getElementById('rPrice').textContent = 'AED ' + (base * G.carMultiplier).toFixed(0);
+  document.getElementById('routeBox').classList.add('show');
+  // Update track ETA price
+  document.getElementById('etaPrice').textContent = 'AED ' + (base * G.carMultiplier).toFixed(0);
+}
+
+function pickCar(el, mult, name) {
+  document.querySelectorAll('.car-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  G.carMultiplier = mult;
+  G.carName = name;
+  updatePrices();
+}
+
+// ══════════ LOCATION ══════════
+function useMyLocation() { locateMe(); }
+function locateMe() {
+  toast('جاري تحديد موقعك...', '📍');
+  if (!navigator.geolocation) { useDemoLocation(); return; }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const {latitude:lat, longitude:lng} = pos.coords;
+      setOriginAt(lat, lng, 'موقعي الحالي');
+      G.map.setView([lat, lng], 15, {animate:true});
+      toast('✅ تم تحديد موقعك الحالي', '📍');
+    },
+    () => useDemoLocation()
+  );
+}
+function useDemoLocation() {
+  setOriginAt(25.2048, 55.2708, 'وسط دبي (تجريبي)');
+  G.map.setView([25.2048, 55.2708], 14, {animate:true});
+  toast('تم استخدام موقع دبي (تجريبي)', '📍');
+}
+
+// ══════════ CONFIRM RIDE ══════════
+function confirmRide() {
+  if (!G.oMarker || !G.dMarker) {
+    toast('حدد موقع الانطلاق والوجهة أولاً', '⚠️');
+    return;
+  }
+  // Switch to track tab
+  const btns = document.querySelectorAll('.tab-nav button');
+  btns.forEach(b => b.classList.remove('active'));
+  btns[1].classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-track').classList.add('active');
+
+  // Update track info
+  document.getElementById('trackO').textContent = document.getElementById('oInput').value || 'الانطلاق';
+  document.getElementById('trackD').textContent = document.getElementById('dInput').value || 'الوجهة';
+
+  toast('تم تأكيد الحجز! السائق في الطريق 🚗', '✅');
+  startCarAnim();
+}
+
+// ══════════ CAR ANIMATION ══════════
+function startCarAnim() {
+  if (G.carMarker) G.map.removeLayer(G.carMarker);
+  clearInterval(G.trackTimer);
+  if (!G.carPath.length) return;
+
+  // Start near origin with offset
+  const start = G.carPath[0];
+  const startLL = L.latLng(start.lat + (Math.random()-.5)*.008, start.lng + (Math.random()-.5)*.008);
+  // Build path: startLL → carPath
+  const fullPath = [startLL, ...G.carPath];
+  G.trackIdx = 0;
+  const totalSteps = fullPath.length;
+
+  G.carMarker = L.marker(startLL, {icon: carIcon(0)}).addTo(G.map);
+
+  G.trackTimer = setInterval(() => {
+    G.trackIdx++;
+    if (G.trackIdx >= totalSteps - 1) {
+      clearInterval(G.trackTimer);
+      if (G.carMarker) G.carMarker.setLatLng(fullPath[totalSteps-1]);
+      toast('وصل السائق! استمتع برحلتك 🎉', '🚗');
+      document.getElementById('etaMin').textContent = '0';
+      document.getElementById('etaKm').textContent = '0';
+      return;
+    }
+    const curr = fullPath[G.trackIdx];
+    const prev = fullPath[G.trackIdx - 1];
+    const angle = Math.atan2(curr.lng - prev.lng, curr.lat - prev.lat) * (180 / Math.PI);
+    G.carMarker.setLatLng(curr);
+    G.carMarker.setIcon(carIcon(angle));
+
+    const progress = G.trackIdx / totalSteps;
+    const remMin = Math.max(0, Math.ceil(G.baseTime * (1 - progress)));
+    const remKm  = ((1 - progress) * G.baseDist).toFixed(1);
+    document.getElementById('etaMin').textContent = remMin;
+    document.getElementById('etaKm').textContent  = remKm;
+
+    // Pan map to car
+    G.map.panTo(curr, {animate:true, duration:.6});
+  }, 900);
+}
+
+function cancelRide() {
+  clearInterval(G.trackTimer);
+  if (G.carMarker) { G.map.removeLayer(G.carMarker); G.carMarker = null; }
+  const btns = document.querySelectorAll('.tab-nav button');
+  btns.forEach(b => b.classList.remove('active'));
+  btns[0].classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-book').classList.add('active');
+  toast('تم إلغاء الرحلة', '❌');
+}
+
+// ══════════ DRIVERS ══════════
+function placeDrivers() {
+  DRIVERS.forEach((d, i) => {
+    const jLat = d.lat + (Math.random()-.5)*.005;
+    const jLng = d.lng + (Math.random()-.5)*.005;
+    const m = L.marker([jLat, jLng], {icon: miniCarIcon(d.emoji)})
+      .addTo(G.map)
+      .bindPopup(`<b style="font-family:'Tajawal',sans-serif">${d.name}</b><br>${d.car} · ⭐${d.rating}<br>وصول: ${d.eta}`);
+    m.on('click', () => hlDriver(i));
+    G.driverMarkers.push(m);
+    // Gentle drift
+    setInterval(() => {
+      const ll = m.getLatLng();
+      m.setLatLng([ll.lat + (Math.random()-.5)*.0003, ll.lng + (Math.random()-.5)*.0003]);
+    }, 2500 + Math.random()*2000);
+  });
+}
+
+function buildDriversList() {
+  const el = document.getElementById('driversList');
+  const bgs = ['#e8f9ee','#dbeafe','#fef3c7','#fce4ec'];
+  el.innerHTML = DRIVERS.map((d,i) => `
+    <div class="drv-item" id="di${i}" onclick="focusDriver(${i})">
+      <div class="drv-av" style="background:${bgs[i%4]}">${d.emoji}</div>
+      <div class="drv-inf">
+        <h5>${d.name}</h5>
+        <p>${d.car} · ${d.color}</p>
+      </div>
+      <div class="drv-meta">
+        <div class="drv-rating">⭐ ${d.rating}</div>
+        <div class="drv-dist">${d.eta}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function hlDriver(i) {
+  document.querySelectorAll('.drv-item').forEach(el => el.classList.remove('hl'));
+  const el = document.getElementById('di'+i);
+  if (el) { el.classList.add('hl'); el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+function focusDriver(i) {
+  const m = G.driverMarkers[i];
+  if (m) { G.map.setView(m.getLatLng(), 15, {animate:true}); m.openPopup(); }
+  hlDriver(i);
+}
+
+function toggleDrivers() {
+  G.driversVisible = !G.driversVisible;
+  G.driverMarkers.forEach(m => G.driversVisible ? m.addTo(G.map) : G.map.removeLayer(m));
+  document.getElementById('drvBtn').classList.toggle('on', G.driversVisible);
+  toast(G.driversVisible ? 'تم إظهار السائقين' : 'تم إخفاء السائقين', '🚗');
+}
+
+// ══════════ FIT ALL ══════════
+function fitAll() {
+  if (G.routeLine) {
+    G.map.fitBounds(G.routeLine.getBounds().pad(.15), {animate:true});
+  } else if (G.oMarker) {
+    G.map.setView(G.oMarker.getLatLng(), 14, {animate:true});
+  } else {
+    G.map.setView(DUBAI, 13, {animate:true});
+  }
+}
+
+// ══════════ THEME ══════════
+function toggleTheme() {
+  G.isDark = !G.isDark;
+  if (G.isDark) { G.map.removeLayer(G.tileLight); G.tileDark.addTo(G.map); }
+  else           { G.map.removeLayer(G.tileDark);  G.tileLight.addTo(G.map); }
+  document.getElementById('themeBtn').textContent = G.isDark ? '☀️ نهاري' : '🌙 ليلي';
+}
+
+// ══════════ TABS ══════════
+function goTab(btn, id) {
+  document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+}
+
+// ══════════ SHARE LOC ══════════
+function shareMyLoc() {
+  if (G.oMarker) {
+    const ll = G.oMarker.getLatLng();
+    const url = `https://www.google.com/maps?q=${ll.lat},${ll.lng}`;
+    navigator.clipboard?.writeText(url)
+      .then(() => toast('تم نسخ رابط الموقع في الحافظة!', '📤'))
+      .catch(() => toast('رابط: ' + url, '📤'));
+  } else {
+    toast('حدد موقعك أولاً', '⚠️');
+  }
+}
+
+// ══════════ TOAST ══════════
+function toast(msg, icon='✅') {
+  const el = document.getElementById('toast');
+  document.getElementById('ti').textContent = icon;
+  document.getElementById('tm').textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+// ══════════ CLOSE SUGGESTIONS ══════════
+document.addEventListener('click', e => {
+  if (!e.target.closest('.input-wrap') && !e.target.closest('.sugg-box')) hideSugg();
+});
+
+// ══════════ START ══════════
+initApp();
+</script>
+</body>
+</html>
