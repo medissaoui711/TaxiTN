@@ -825,6 +825,16 @@
     }
   </style>
   <link rel="stylesheet" href="css/taxitn_maps.css">
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('[PWA] SW registered:', reg.scope))
+          .catch(err => console.log('[PWA] SW failed:', err));
+      });
+    }
+  </script>
 </head>
 
 <body>
