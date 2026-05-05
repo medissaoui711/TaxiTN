@@ -1,0 +1,678 @@
+openapi: 3.0.3
+info:
+  title: TaxiTN API
+  description: Backend API for TaxiTN - Delivery & Ride Hailing Platform
+  version: 1.0.0
+  contact:
+    name: TaxiTN Development Team
+    email: contacteinfo71@gmail.com
+
+servers:
+  - url: https://api.taxitn.com/v1
+    description: Production server
+  - url: http://localhost:8080/v1
+    description: Local development
+
+security:
+  - BearerAuth: []
+
+paths:
+  # Authentication
+  /auth/register:
+    post:
+      summary: Register new user
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        400:
+          description: Invalid input
+
+  /auth/login:
+    post:
+      summary: Login user
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        401:
+          description: Invalid credentials
+
+  /auth/verify-otp:
+    post:
+      summary: Verify OTP code
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        200:
+          description: OTP verified
+
+  # Users
+  /users/profile:
+    get:
+      summary: Get user profile
+      tags: [Users]
+      responses:
+        200:
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+    put:
+      summary: Update user profile
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        200:
+          description: Profile updated
+
+  # Drivers
+  /drivers/register:
+    post:
+      summary: Register as driver
+      tags: [Drivers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRegister'
+      responses:
+        201:
+          description: Driver registered
+
+  /drivers/location:
+    post:
+      summary: Update driver location
+      tags: [Drivers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationUpdate'
+      responses:
+        200:
+          description: Location updated
+
+  /drivers/online:
+    post:
+      summary: Go online/offline
+      tags: [Drivers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_online:
+                  type: boolean
+      responses:
+        200:
+          description: Status updated
+
+  # Rides
+  /rides/estimate:
+    post:
+      summary: Get ride fare estimate
+      tags: [Rides]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideEstimateRequest'
+      responses:
+        200:
+          description: Fare estimate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideEstimate'
+
+  /rides:
+    post:
+      summary: Request a ride
+      tags: [Rides]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideRequest'
+      responses:
+        201:
+          description: Ride requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+
+  /rides/{id}:
+    get:
+      summary: Get ride details
+      tags: [Rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ride details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+
+  /rides/{id}/cancel:
+    post:
+      summary: Cancel ride
+      tags: [Rides]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+      responses:
+        200:
+          description: Ride cancelled
+
+  # Orders (Food/Grocery)
+  /orders:
+    post:
+      summary: Place an order
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        201:
+          description: Order placed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+
+  /orders/{id}:
+    get:
+      summary: Get order details
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Order details
+
+  # Restaurants
+  /restaurants:
+    get:
+      summary: List restaurants
+      tags: [Restaurants]
+      security: []
+      parameters:
+        - name: lat
+          in: query
+          schema:
+            type: number
+        - name: lng
+          in: query
+          schema:
+            type: number
+        - name: cuisine
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: List of restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Restaurant'
+
+  /restaurants/{id}:
+    get:
+      summary: Get restaurant details
+      tags: [Restaurants]
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Restaurant details
+
+  # Payments
+  /payments/methods:
+    get:
+      summary: Get payment methods
+      tags: [Payments]
+      responses:
+        200:
+          description: Payment methods
+
+  /payments/wallet:
+    get:
+      summary: Get wallet balance
+      tags: [Payments]
+      responses:
+        200:
+          description: Wallet balance
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # Auth schemas
+    RegisterRequest:
+      type: object
+      required: [phone, password, name]
+      properties:
+        phone:
+          type: string
+          example: "+21612345678"
+        password:
+          type: string
+          minLength: 6
+        name:
+          type: string
+        role:
+          type: string
+          enum: [customer, driver, restaurant]
+          default: customer
+
+    LoginRequest:
+      type: object
+      required: [phone, password]
+      properties:
+        phone:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+        refresh_token:
+          type: string
+
+    # User schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        phone:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [customer, driver, restaurant, admin]
+        avatar_url:
+          type: string
+        is_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        avatar_url:
+          type: string
+
+    # Driver schemas
+    DriverRegister:
+      type: object
+      required: [vehicle_type, license_number, vehicle_plate]
+      properties:
+        vehicle_type:
+          type: string
+          enum: [taxi, go, business, max]
+        license_number:
+          type: string
+        vehicle_plate:
+          type: string
+        vehicle_year:
+          type: integer
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              url:
+                type: string
+
+    LocationUpdate:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+          minimum: -90
+          maximum: 90
+        lng:
+          type: number
+          minimum: -180
+          maximum: 180
+        heading:
+          type: number
+        speed:
+          type: number
+
+    # Ride schemas
+    RideEstimateRequest:
+      type: object
+      required: [pickup, destination]
+      properties:
+        pickup:
+          $ref: '#/components/schemas/Location'
+        destination:
+          $ref: '#/components/schemas/Location'
+        service_type:
+          type: string
+          enum: [taxi, go, business, max]
+
+    RideEstimate:
+      type: object
+      properties:
+        fare:
+          type: number
+        currency:
+          type: string
+          default: "TND"
+        distance_km:
+          type: number
+        duration_min:
+          type: integer
+        service_types:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+              name:
+                type: string
+              fare:
+                type: number
+              eta_min:
+                type: integer
+
+    RideRequest:
+      type: object
+      required: [pickup, destination, service_type]
+      properties:
+        pickup:
+          $ref: '#/components/schemas/Location'
+        destination:
+          $ref: '#/components/schemas/Location'
+        service_type:
+          type: string
+        payment_method:
+          type: string
+          enum: [cash, wallet, card]
+        promo_code:
+          type: string
+        notes:
+          type: string
+
+    Ride:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, arrived, in_progress, completed, cancelled]
+        pickup:
+          $ref: '#/components/schemas/Location'
+        destination:
+          $ref: '#/components/schemas/Location'
+        driver:
+          $ref: '#/components/schemas/Driver'
+        fare:
+          type: number
+        actual_fare:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Order schemas
+    OrderRequest:
+      type: object
+      required: [restaurant_id, items]
+      properties:
+        restaurant_id:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        delivery_address:
+          $ref: '#/components/schemas/Location'
+        payment_method:
+          type: string
+        notes:
+          type: string
+
+    OrderItem:
+      type: object
+      required: [item_id, quantity]
+      properties:
+        item_id:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        options:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, preparing, ready, picked_up, delivering, completed, cancelled]
+        restaurant:
+          $ref: '#/components/schemas/Restaurant'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        subtotal:
+          type: number
+        delivery_fee:
+          type: number
+        total:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+
+    # Restaurant schemas
+    Restaurant:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cuisine_type:
+          type: string
+        rating:
+          type: number
+          minimum: 0
+          maximum: 5
+        delivery_time_min:
+          type: integer
+        delivery_fee:
+          type: number
+        min_order:
+          type: number
+        image_url:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        is_open:
+          type: boolean
+
+    # Common schemas
+    Location:
+      type: object
+      required: [lat, lng]
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
+        address:
+          type: string
+        city:
+          type: string
+
+    Driver:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        avatar_url:
+          type: string
+        rating:
+          type: number
+        vehicle:
+          type: object
+          properties:
+            type:
+              type: string
+            plate:
+              type: string
+            color:
+              type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        eta_min:
+          type: integer
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+
+  parameters:
+    PageParam:
+      in: query
+      name: page
+      schema:
+        type: integer
+        default: 1
+
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        default: 20
+        maximum: 100
