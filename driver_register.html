@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaxiTN – تسجيل السائق</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --g: #3DC56A;
+      --gd: #2aa855;
+      --gl: #e8f9ee;
+      --bk: #0a0a0a;
+      --gr: #6b7280;
+      --lt: #f8fafc;
+      --wh: #fff;
+      --radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: #f1f5f9;
+      color: var(--bk);
+      min-height: 100vh;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--bk);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--g);
+    }
+
+    .logo span {
+      color: #fff;
+    }
+
+    .topbar-sub {
+      color: rgba(255, 255, 255, .45);
+      font-size: 13px;
+    }
+
+    /* HERO STRIP */
+    .hero-strip {
+      background: linear-gradient(135deg, #052e16, #14532d);
+      padding: 40px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-strip h1 {
+      font-size: 34px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .hero-strip h1 span {
+      color: var(--g);
+    }
+
+    .hero-strip p {
+      color: rgba(255, 255, 255, .6);
+      font-size: 15px;
+    }
+
+    .hero-perks {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .perk {
+      background: rgba(61, 197, 106, .15);
+      border: 1px solid rgba(61, 197, 106, .3);
+      color: #4ade80;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .hero-nums {
+      display: flex;
+      gap: 28px;
+    }
+
+    .hn {
+      text-align: center;
+    }
+
+    .hn .v {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--g);
+    }
+
+    .hn .l {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .45);
+    }
+
+    /* STEPPER */
+    .stepper-wrap {
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 60px;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 0;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: #e5e7eb;
+      color: var(--gr);
+      transition: all .3s;
+      flex-shrink: 0;
+    }
+
+    .step.done .step-num {
+      background: var(--g);
+      color: #fff;
+    }
+
+    .step.active .step-num {
+      background: var(--bk);
+      color: #fff;
+    }
+
+    .step-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gr);
+    }
+
+    .step.active .step-label {
+      color: var(--bk);
+      font-weight: 700;
+    }
+
+    .step.done .step-label {
+      color: var(--g);
+    }
+
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #e5e7eb;
+      margin: 0 8px;
+    }
+
+    .step-line.done {
+      background: var(--g);
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 780px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    /* FORM CARD */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .ct-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--gl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .card-sub {
+      color: var(--gr);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-grid.col1 {
+      grid-template-columns: 1fr;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .fg.full {
+      grid-column: 1/-1;
+    }
+
+    .fg label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .fg label .req {
+      color: #ef4444;
+      margin-right: 2px;
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      padding: 11px 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+      background: #fff;
+      color: var(--bk);
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: var(--g);
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .fg .hint {
+      font-size: 11px;
+      color: var(--gr);
+    }
+
+    .fg .err {
+      font-size: 11px;
+      color: #ef4444;
+      display: none;
+    }
+
+    /* UPLOAD ZONE */
+    .upload-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fafafa;
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag {
+      border-color: var(--g);
+      background: var(--gl);
+    }
+
+    .upload-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .uz-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .uz-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .uz-sub {
+      font-size: 12px;
+      color: var(--gr);
+    }
+
+    .uz-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .uz-file {
+      background: var(--gl);
+      color: var(--gd);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .uz-file button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--gr);
+    }
+
+    /* VEHICLE TYPE SELECTOR */
+    .vtype-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .vtype {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: #fff;
+    }
+
+    .vtype.sel,
+    .vtype:hover {
+      border-color: var(--g);
+      background: var(--gl);
+    }
+
+    .vtype .vi {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .vtype .vn {
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .vtype .vp {
+      font-size: 10px;
+      color: var(--gr);
+      margin-top: 2px;
+    }
+
+    /* AGREEMENT */
+    .agree-box {
+      background: var(--lt);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .agree-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .agree-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .agree-item input[type=checkbox] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--g);
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .agree-item label {
+      font-size: 13px;
+      color: #374151;
+      cursor: pointer;
+      line-height: 1.6;
+    }
+
+    .agree-item label a {
+      color: var(--g);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    /* NAV BUTTONS */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .btn-back {
+      padding: 12px 28px;
+      border: 2px solid #e5e7eb;
+      border-radius: 50px;
+      background: #fff;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--gr);
+      transition: all .2s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--bk);
+      color: var(--bk);
+    }
+
+    .btn-next {
+      padding: 12px 36px;
+      background: var(--g);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(61, 197, 106, .3);
+      transition: all .2s;
+    }
+
+    .btn-next:hover {
+      background: var(--gd);
+      transform: translateY(-1px);
+    }
+
+    /* SUCCESS */
+    .success-page {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .success-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--gl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      margin: 0 auto 24px;
+    }
+
+    .success-page h2 {
+      font-size: 30px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+
+    .success-page p {
+      color: var(--gr);
+      font-size: 15px;
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+
+    .success-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+
+    .ss {
+      background: var(--lt);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .ss .si {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .ss .sn {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gr);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--g);
+      border-radius: 2px;
+      transition: width .4s ease;
+    }
+
+    /* STATUS BADGE */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-review {
+      background: #dbeafe;
+      color: #1e3a8a;
+    }
+
+    .status-approved {
+      background: var(--gl);
+      color: var(--gd);
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 9999;
+      transition: transform .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media(max-width:768px) {
+      .hero-strip {
+        flex-direction: column;
+        gap: 24px;
+        padding: 32px 24px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .vtype-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .success-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .stepper-wrap {
+        padding: 0 20px;
+      }
+
+      .main {
+        padding: 0 16px 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="toast"><span id="tm"></span></div>
+
+  <div class="topbar">
+    <div class="logo">care<span>em</span></div>
+    <div class="topbar-sub">بوابة تسجيل السائقين</div>
+  </div>
+
+  <div class="hero-strip">
+    <div>
+      <h1>انضم كسائق <span>كريم</span></h1>
+      <p>اكسب دخلاً مرناً بجدولك الخاص. سجّل الآن وابدأ خلال 48 ساعة.</p>
+      <div class="hero-perks">
+        <span class="perk">💰 دخل يصل لـ 8,000 درهم/شهر</span>
+        <span class="perk">🕐 ساعات عمل مرنة</span>
+        <span class="perk">⚡ تفعيل خلال 48 ساعة</span>
+      </div>
+    </div>
+    <div class="hero-nums">
+      <div class="hn">
+        <div class="v">200K+</div>
+        <div class="l">سائق نشط</div>
+      </div>
+      <div class="hn">
+        <div class="v">14</div>
+        <div class="l">دولة</div>
+      </div>
+      <div class="hn">
+        <div class="v">4.8★</div>
+        <div class="l">رضا السائقين</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stepper-wrap">
+    <div class="stepper">
+      <div class="step active" id="s1" onclick="jumpStep(1)">
+        <div class="step-num">1</div>
+        <div class="step-label">البيانات الشخصية</div>
+      </div>
+      <div class="step-line" id="sl1"></div>
+      <div class="step" id="s2" onclick="jumpStep(2)">
+        <div class="step-num">2</div>
+        <div class="step-label">بيانات السيارة</div>
+      </div>
+      <div class="step-line" id="sl2"></div>
+      <div class="step" id="s3" onclick="jumpStep(3)">
+        <div class="step-num">3</div>
+        <div class="step-label">الوثائق والمستندات</div>
+      </div>
+      <div class="step-line" id="sl3"></div>
+      <div class="step" id="s4" onclick="jumpStep(4)">
+        <div class="step-num">4</div>
+        <div class="step-label">المراجعة والإرسال</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog" style="width:25%"></div>
+    </div>
+
+    <!-- STEP 1: Personal Info -->
+    <div id="page1">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">👤</div>البيانات الشخصية
+        </div>
+        <div class="card-sub">أدخل بياناتك الشخصية كما تظهر في هويتك الرسمية</div>
+        <div class="form-grid">
+          <div class="fg"><label><span class="req">*</span>الاسم الأول</label><input type="text" id="fname"
+              placeholder="محمد"></div>
+          <div class="fg"><label><span class="req">*</span>اسم العائلة</label><input type="text" id="lname"
+              placeholder="الأحمدي"></div>
+          <div class="fg"><label><span class="req">*</span>رقم الهاتف</label><input type="tel" id="phone"
+              placeholder="+971 5xx xxx xxxx"></div>
+          <div class="fg"><label><span class="req">*</span>البريد الإلكتروني</label><input type="email" id="email"
+              placeholder="driver@email.com"></div>
+          <div class="fg"><label><span class="req">*</span>رقم الهوية الوطنية / الإقامة</label><input type="text"
+              id="natid" placeholder="784-XXXX-XXXXXXX-X"></div>
+          <div class="fg"><label><span class="req">*</span>الجنسية</label>
+            <select id="nation">
+              <option value="">اختر الجنسية</option>
+              <option>إماراتي</option>
+              <option>سعودي</option>
+              <option>مصري</option>
+              <option>باكستاني</option>
+              <option>هندي</option>
+              <option>بنغلاديشي</option>
+              <option>فلبيني</option>
+              <option>أردني</option>
+              <option>أخرى</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>تاريخ الميلاد</label><input type="date" id="dob"></div>
+          <div class="fg"><label><span class="req">*</span>المدينة</label>
+            <select id="city">
+              <option value="">اختر المدينة</option>
+              <option>دبي</option>
+              <option>أبوظبي</option>
+              <option>الشارقة</option>
+              <option>عجمان</option>
+              <option>رأس الخيمة</option>
+              <option>الفجيرة</option>
+            </select>
+          </div>
+          <div class="fg full"><label>العنوان التفصيلي</label><input type="text" id="addr"
+              placeholder="المنطقة، الشارع، رقم المبنى"></div>
+          <div class="fg"><label><span class="req">*</span>كلمة المرور</label><input type="password" id="pass"
+              placeholder="8 أحرف على الأقل"></div>
+          <div class="fg"><label><span class="req">*</span>تأكيد كلمة المرور</label><input type="password" id="pass2"
+              placeholder="أعد إدخال كلمة المرور"></div>
+        </div>
+      </div>
+      <div class="form-nav">
+        <div></div>
+        <button class="btn-next" onclick="goNext(1)">التالي: بيانات السيارة ←</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Vehicle Info -->
+    <div id="page2" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">🚗</div>نوع المركبة
+        </div>
+        <div class="card-sub">اختر فئة مركبتك للانضمام للخدمة المناسبة</div>
+        <div class="vtype-grid">
+          <div class="vtype sel" onclick="selVtype(this,'go')">
+            <div class="vi">🚗</div>
+            <div class="vn">كريم GO</div>
+            <div class="vp">سيدان عادية</div>
+          </div>
+          <div class="vtype" onclick="selVtype(this,'business')">
+            <div class="vi">🚙</div>
+            <div class="vn">Business</div>
+            <div class="vp">سيارة فاخرة</div>
+          </div>
+          <div class="vtype" onclick="selVtype(this,'max')">
+            <div class="vi">🚐</div>
+            <div class="vn">MAX</div>
+            <div class="vp">7 ركاب+</div>
+          </div>
+          <div class="vtype" onclick="selVtype(this,'bike')">
+            <div class="vi">🏍️</div>
+            <div class="vn">Bike</div>
+            <div class="vp">توصيل طلبات</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">🔧</div>تفاصيل المركبة
+        </div>
+        <div class="card-sub">أدخل بيانات سيارتك كما تظهر في رخصة المركبة</div>
+        <div class="form-grid">
+          <div class="fg"><label><span class="req">*</span>الشركة المصنّعة</label>
+            <select id="vmake">
+              <option value="">اختر الشركة</option>
+              <option>Toyota</option>
+              <option>Hyundai</option>
+              <option>Nissan</option>
+              <option>Kia</option>
+              <option>Honda</option>
+              <option>Mitsubishi</option>
+              <option>Ford</option>
+              <option>Chevrolet</option>
+              <option>BMW</option>
+              <option>Mercedes</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>الموديل</label><input type="text" id="vmodel"
+              placeholder="Camry / Sonata / Altima"></div>
+          <div class="fg"><label><span class="req">*</span>سنة الصنع</label>
+            <select id="vyear">
+              <option value="">اختر السنة</option>
+              <option>2024</option>
+              <option>2023</option>
+              <option>2022</option>
+              <option>2021</option>
+              <option>2020</option>
+              <option>2019</option>
+              <option>2018</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>لون السيارة</label>
+            <select id="vcolor">
+              <option value="">اختر اللون</option>
+              <option>أبيض</option>
+              <option>أسود</option>
+              <option>رمادي</option>
+              <option>فضي</option>
+              <option>أزرق</option>
+              <option>أحمر</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>رقم اللوحة</label><input type="text" id="vplate"
+              placeholder="A 12345 Dubai"></div>
+          <div class="fg"><label><span class="req">*</span>عدد المقاعد</label>
+            <select id="vseats">
+              <option value="">اختر</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8+</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>نوع الوقود</label>
+            <select id="vfuel">
+              <option value="">اختر</option>
+              <option>بنزين</option>
+              <option>ديزل</option>
+              <option>كهربائي</option>
+              <option>هجين</option>
+            </select>
+          </div>
+          <div class="fg"><label>رقم الهيكل (VIN)</label><input type="text" id="vvin" placeholder="1HGCM82633A123456">
+            <div class="hint">اختياري — يساعد في التحقق السريع</div>
+          </div>
+          <div class="fg full"><label>ملاحظات إضافية عن السيارة</label><textarea id="vnote"
+              placeholder="أي معلومات إضافية عن المركبة..."></textarea></div>
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-back" onclick="goBack(2)">← السابق</button>
+        <button class="btn-next" onclick="goNext(2)">التالي: الوثائق ←</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Documents -->
+    <div id="page3" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">📄</div>الوثائق المطلوبة
+        </div>
+        <div class="card-sub">يجب رفع جميع الوثائق بصورة واضحة وغير منتهية الصلاحية</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+
+          <div class="fg">
+            <label><span class="req">*</span>رخصة القيادة (وجهان)</label>
+            <div class="upload-zone" id="uz1" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz1')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz1')">
+              <div class="uz-icon">🪪</div>
+              <div class="uz-title">اسحب الملف أو انقر للرفع</div>
+              <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
+              <div class="uz-preview" id="pv-uz1"></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label><span class="req">*</span>رخصة المركبة (مستوفاة)</label>
+            <div class="upload-zone" id="uz2" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz2')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz2')">
+              <div class="uz-icon">📋</div>
+              <div class="uz-title">اسحب الملف أو انقر للرفع</div>
+              <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
+              <div class="uz-preview" id="pv-uz2"></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label><span class="req">*</span>بطاقة الهوية / الإقامة</label>
+            <div class="upload-zone" id="uz3" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz3')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz3')">
+              <div class="uz-icon">🆔</div>
+              <div class="uz-title">اسحب الملف أو انقر للرفع</div>
+              <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
+              <div class="uz-preview" id="pv-uz3"></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label><span class="req">*</span>تأمين المركبة (ساري)</label>
+            <div class="upload-zone" id="uz4" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz4')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz4')">
+              <div class="uz-icon">🛡️</div>
+              <div class="uz-title">اسحب الملف أو انقر للرفع</div>
+              <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
+              <div class="uz-preview" id="pv-uz4"></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label>صورة شخصية احترافية</label>
+            <div class="upload-zone" id="uz5" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz5')">
+              <input type="file" accept="image/*" onchange="handleFiles(this,'uz5')">
+              <div class="uz-icon">🤳</div>
+              <div class="uz-title">صورة واضحة للوجه</div>
+              <div class="uz-sub">خلفية بيضاء مفضلة</div>
+              <div class="uz-preview" id="pv-uz5"></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label>شهادة السجل الجنائي</label>
+            <div class="upload-zone" id="uz6" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
+              ondrop="dropFile(event,this,'uz6')">
+              <input type="file" accept="image/*,.pdf" onchange="handleFiles(this,'uz6')">
+              <div class="uz-icon">📜</div>
+              <div class="uz-title">شهادة حسن السيرة</div>
+              <div class="uz-sub">اختياري — يسرّع عملية القبول</div>
+              <div class="uz-preview" id="pv-uz6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">🏦</div>بيانات الحساب البنكي
+        </div>
+        <div class="card-sub">لصرف أرباحك مباشرة إلى حسابك</div>
+        <div class="form-grid">
+          <div class="fg"><label><span class="req">*</span>اسم البنك</label>
+            <select id="bank">
+              <option value="">اختر البنك</option>
+              <option>Emirates NBD</option>
+              <option>ADCB</option>
+              <option>FAB</option>
+              <option>Mashreq</option>
+              <option>RAK Bank</option>
+              <option>DIB</option>
+            </select>
+          </div>
+          <div class="fg"><label><span class="req">*</span>اسم صاحب الحساب</label><input type="text" id="bname"
+              placeholder="الاسم كما في البنك"></div>
+          <div class="fg"><label><span class="req">*</span>رقم IBAN</label><input type="text" id="iban"
+              placeholder="AE07 0331 2345 6789 0123 456"></div>
+          <div class="fg"><label>رقم الحساب</label><input type="text" id="accnum" placeholder="اختياري"></div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-back" onclick="goBack(3)">← السابق</button>
+        <button class="btn-next" onclick="goNext(3)">التالي: المراجعة ←</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Review & Submit -->
+    <div id="page4" style="display:none">
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">✅</div>مراجعة البيانات
+        </div>
+        <div class="card-sub">تحقق من بياناتك قبل الإرسال النهائي</div>
+        <div id="review-content" style="display:grid;gap:12px"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <div class="ct-icon">📜</div>الشروط والاتفاقيات
+        </div>
+        <div class="agree-box">
+          <div class="agree-item">
+            <input type="checkbox" id="ag1">
+            <label for="ag1">أقر بأن جميع البيانات والوثائق المقدمة صحيحة ودقيقة، وأتحمل المسؤولية القانونية عن أي
+              معلومات مضللة.</label>
+          </div>
+          <div class="agree-item">
+            <input type="checkbox" id="ag2">
+            <label for="ag2">أوافق على <a href="#">شروط وأحكام كريم للسائقين</a> و<a href="#">سياسة الخصوصية</a>، بما
+              تشمله من حقوق والتزامات.</label>
+          </div>
+          <div class="agree-item">
+            <input type="checkbox" id="ag3">
+            <label for="ag3">أوافق على إجراء فحص الخلفية وتحقق الهوية من قِبل كريم أو شركائها المرخصين.</label>
+          </div>
+          <div class="agree-item">
+            <input type="checkbox" id="ag4">
+            <label for="ag4">أفهم أن الموافقة على طلبي تستغرق ما بين 24-48 ساعة عمل بعد اكتمال جميع الوثائق.</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-back" onclick="goBack(4)">← السابق</button>
+        <button class="btn-next" style="background:#052e16;padding:14px 44px;font-size:15px" onclick="submitForm()">🚀
+          إرسال الطلب</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="page5" style="display:none">
+      <div class="card success-page">
+        <div class="success-icon">🎉</div>
+        <h2>تم إرسال طلبك بنجاح!</h2>
+        <p>مرحباً بك في عائلة كريم! سيقوم فريقنا بمراجعة طلبك وسيتواصل معك<br>خلال <strong>24-48 ساعة</strong> عبر
+          البريد الإلكتروني والهاتف.</p>
+        <div style="margin-bottom:24px">
+          <span class="status-badge status-pending">⏳ قيد المراجعة</span>
+        </div>
+        <div class="success-steps">
+          <div class="ss">
+            <div class="si">📧</div>
+            <div class="sn">تأكيد الاستلام بالبريد</div>
+          </div>
+          <div class="ss">
+            <div class="si">🔍</div>
+            <div class="sn">مراجعة الوثائق 24h</div>
+          </div>
+          <div class="ss">
+            <div class="si">✅</div>
+            <div class="sn">تفعيل الحساب والبدء</div>
+          </div>
+        </div>
+        <div style="background:var(--lt);border-radius:12px;padding:18px;margin-bottom:24px;text-align:right">
+          <div style="font-size:13px;color:var(--gr);margin-bottom:6px">رقم الطلب المرجعي</div>
+          <div style="font-size:22px;font-weight:900;color:var(--g);letter-spacing:2px" id="refNum">DRV-2025-XXXX</div>
+        </div>
+        <button class="btn-next" onclick="toast('سيتم فتح لوحة السائق بعد الموافقة')">متابعة حالة الطلب</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let curStep = 1, selVehicle = 'go';
+    const uploaded = { uz1: false, uz2: false, uz3: false, uz4: false };
+
+    function goNext(step) {
+      if (!validateStep(step)) return;
+      curStep++;
+      showStep(curStep);
+      if (curStep === 4) buildReview();
+    }
+    function goBack(step) { curStep--; showStep(curStep); }
+    function jumpStep(s) { if (s <= curStep) showStep(s); }
+
+    function showStep(s) {
+      for (let i = 1; i <= 5; i++) {
+        const p = document.getElementById('page' + i);
+        if (p) p.style.display = i === s ? 'block' : 'none';
+      }
+      // Update stepper
+      for (let i = 1; i <= 4; i++) {
+        const st = document.getElementById('s' + i);
+        const ln = document.getElementById('sl' + i);
+        st.className = 'step' + (i < s ? ' done' : i === s ? ' active' : '');
+        if (ln) ln.className = 'step-line' + (i < s ? ' done' : '');
+      }
+      const pcts = { 1: 25, 2: 50, 3: 75, 4: 100, 5: 100 };
+      document.getElementById('prog').style.width = pcts[s] + '%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(s) {
+      if (s === 1) {
+        const fields = [['fname', 'الاسم الأول'], ['lname', 'اسم العائلة'], ['phone', 'رقم الهاتف'], ['email', 'البريد الإلكتروني'], ['natid', 'رقم الهوية'], ['nation', 'الجنسية'], ['city', 'المدينة']];
+        for (const [id, name] of fields) {
+          if (!document.getElementById(id).value.trim()) { toast('الرجاء إدخال: ' + name); return false; }
+        }
+        const p = document.getElementById('pass').value, p2 = document.getElementById('pass2').value;
+        if (p.length < 8) { toast('كلمة المرور يجب أن تكون 8 أحرف على الأقل'); return false; }
+        if (p !== p2) { toast('كلمتا المرور غير متطابقتين'); return false; }
+      }
+      if (s === 2) {
+        const fields = [['vmake', 'الشركة المصنعة'], ['vmodel', 'الموديل'], ['vyear', 'سنة الصنع'], ['vplate', 'رقم اللوحة']];
+        for (const [id, name] of fields) {
+          if (!document.getElementById(id).value.trim()) { toast('الرجاء إدخال: ' + name); return false; }
+        }
+      }
+      if (s === 3) {
+        const req = ['uz1', 'uz2', 'uz3', 'uz4'];
+        const labels = { uz1: 'رخصة القيادة', uz2: 'رخصة المركبة', uz3: 'بطاقة الهوية', uz4: 'تأمين المركبة' };
+        for (const id of req) {
+          if (!uploaded[id]) { toast('الرجاء رفع: ' + labels[id]); return false; }
+        }
+        if (!document.getElementById('bank').value) { toast('الرجاء اختيار البنك'); return false; }
+        if (!document.getElementById('iban').value) { toast('الرجاء إدخال رقم IBAN'); return false; }
+      }
+      if (s === 4) {
+        if (!document.getElementById('ag1').checked || !document.getElementById('ag2').checked || !document.getElementById('ag3').checked) {
+          toast('يجب الموافقة على جميع الشروط الإلزامية'); return false;
+        }
+      }
+      return true;
+    }
+
+    function selVtype(el, type) {
+      document.querySelectorAll('.vtype').forEach(v => v.classList.remove('sel'));
+      el.classList.add('sel'); selVehicle = type;
+    }
+
+    function buildReview() {
+      const data = [
+        { label: 'الاسم الكامل', val: (document.getElementById('fname').value + ' ' + document.getElementById('lname').value).trim() },
+        { label: 'رقم الهاتف', val: document.getElementById('phone').value },
+        { label: 'البريد الإلكتروني', val: document.getElementById('email').value },
+        { label: 'الجنسية', val: document.getElementById('nation').value },
+        { label: 'المدينة', val: document.getElementById('city').value },
+        { label: 'نوع المركبة', val: { go: 'كريم GO', business: 'Business', max: 'MAX', bike: 'Bike' }[selVehicle] },
+        { label: 'الشركة / الموديل', val: document.getElementById('vmake').value + ' ' + document.getElementById('vmodel').value },
+        { label: 'سنة الصنع', val: document.getElementById('vyear').value },
+        { label: 'رقم اللوحة', val: document.getElementById('vplate').value },
+        { label: 'البنك', val: document.getElementById('bank').value },
+      ];
+      document.getElementById('review-content').innerHTML = data.map(d => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0">
+      <span style="font-size:13px;color:var(--gr)">${d.label}</span>
+      <span style="font-size:14px;font-weight:700">${d.val || '—'}</span>
+    </div>`).join('');
+    }
+
+    function submitForm() {
+      if (!validateStep(4)) return;
+      const ref = 'DRV-2025-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('refNum').textContent = ref;
+      curStep = 5;
+      showStep(5);
+    }
+
+    // UPLOAD
+    function handleFiles(input, zoneId) {
+      const files = Array.from(input.files);
+      if (files.length) {
+        uploaded[zoneId] = true;
+        showFiles(files, zoneId);
+      }
+    }
+    function showFiles(files, zoneId) {
+      const pv = document.getElementById('pv-' + zoneId);
+      pv.innerHTML = files.map(f => `<div class="uz-file">📎 ${f.name.slice(0, 20)} <button onclick="clearFile('${zoneId}')">×</button></div>`).join('');
+    }
+    function clearFile(zoneId) {
+      uploaded[zoneId] = false;
+      document.getElementById('pv-' + zoneId).innerHTML = '';
+    }
+    function dragOver(e, el) { e.preventDefault(); el.classList.add('drag'); }
+    function dragLeave(el) { el.classList.remove('drag'); }
+    function dropFile(e, el, zoneId) {
+      e.preventDefault(); el.classList.remove('drag');
+      const files = Array.from(e.dataTransfer.files);
+      if (files.length) { uploaded[zoneId] = true; showFiles(files, zoneId); }
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('tm').textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+
+</html>
