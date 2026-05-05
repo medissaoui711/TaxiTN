@@ -1,0 +1,101 @@
+/* TaxiTN Admin Dashboard Styles */
+
+/* Table Amount Styles */
+.td-amount {
+    font-weight: 700;
+}
+
+.td-amount-green {
+    font-weight: 700;
+    color: var(--g);
+}
+
+.td-amount-red {
+    font-weight: 700;
+    color: var(--red);
+}
+
+/* Activity Dot Colors */
+.act-dot-green {
+    background: var(--g);
+}
+
+.act-dot-blue {
+    background: var(--blue);
+}
+
+.act-dot-amber {
+    background: var(--amber);
+}
+
+.act-dot-red {
+    background: var(--red);
+}
+
+.act-dot-purple {
+    background: var(--pu);
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* Table Amount Styles */
+.td-amount {
+    font-weight: 700;
+}
+
+.td-amount-green {
+    font-weight: 700;
+    color: var(--g);
+}
+
+.td-amount-red {
+    font-weight: 700;
+    color: var(--red);
+}
+
+/* Driver Row Status */
+.drv-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.drv-status-active {
+    background: var(--gl);
+    color: var(--g);
+}
+
+.drv-status-pending {
+    background: var(--warning-bg, #fef3c7);
+    color: var(--amber);
+}
+
+.drv-status-offline {
+    background: var(--gray-bg, #f3f4f6);
+    color: var(--gr);
+}
+
+.drv-status-busy {
+    background: var(--danger-bg, #fee2e2);
+    color: var(--red);
+}
+
+/* KPI Grid Responsive */
+@media (max-width: 1024px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+}
