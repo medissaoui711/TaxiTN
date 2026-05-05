@@ -640,6 +640,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/driver_register.css">
 </head>
 
 <body>
@@ -647,7 +648,7 @@
   <div id="toast"><span id="tm"></span></div>
 
   <div class="topbar">
-    <div class="logo">care<span>em</span></div>
+    <div class="logo">Taxi<span>TN</span></div>
     <div class="topbar-sub">بوابة تسجيل السائقين</div>
   </div>
 
@@ -703,7 +704,7 @@
 
   <div class="main">
     <div class="progress-bar">
-      <div class="progress-fill" id="prog" style="width:25%"></div>
+      <div class="progress-fill" id="prog"></div>
     </div>
 
     <!-- STEP 1: Personal Info -->
@@ -725,7 +726,7 @@
           <div class="fg"><label><span class="req">*</span>رقم الهوية الوطنية / الإقامة</label><input type="text"
               id="natid" placeholder="784-XXXX-XXXXXXX-X"></div>
           <div class="fg"><label><span class="req">*</span>الجنسية</label>
-            <select id="nation">
+            <select id="nation" aria-label="اختر الجنسية">
               <option value="">اختر الجنسية</option>
               <option>إماراتي</option>
               <option>سعودي</option>
@@ -738,9 +739,10 @@
               <option>أخرى</option>
             </select>
           </div>
-          <div class="fg"><label><span class="req">*</span>تاريخ الميلاد</label><input type="date" id="dob"></div>
+          <div class="fg"><label><span class="req">*</span>تاريخ الميلاد</label><input type="date" id="dob"
+              title="تاريخ الميلاد"></div>
           <div class="fg"><label><span class="req">*</span>المدينة</label>
-            <select id="city">
+            <select id="city" aria-label="اختر المدينة">
               <option value="">اختر المدينة</option>
               <option>دبي</option>
               <option>أبوظبي</option>
@@ -765,7 +767,7 @@
     </div>
 
     <!-- STEP 2: Vehicle Info -->
-    <div id="page2" style="display:none">
+    <div id="page2" class="page-hidden">
       <div class="card">
         <div class="card-title">
           <div class="ct-icon">🚗</div>نوع المركبة
@@ -774,7 +776,7 @@
         <div class="vtype-grid">
           <div class="vtype sel" onclick="selVtype(this,'go')">
             <div class="vi">🚗</div>
-            <div class="vn">كريم GO</div>
+            <div class="vn">TaxiTN GO</div>
             <div class="vp">سيدان عادية</div>
           </div>
           <div class="vtype" onclick="selVtype(this,'business')">
@@ -801,7 +803,7 @@
         <div class="card-sub">أدخل بيانات سيارتك كما تظهر في رخصة المركبة</div>
         <div class="form-grid">
           <div class="fg"><label><span class="req">*</span>الشركة المصنّعة</label>
-            <select id="vmake">
+            <select id="vmake" aria-label="اختر الشركة المصنعة">
               <option value="">اختر الشركة</option>
               <option>Toyota</option>
               <option>Hyundai</option>
@@ -818,7 +820,7 @@
           <div class="fg"><label><span class="req">*</span>الموديل</label><input type="text" id="vmodel"
               placeholder="Camry / Sonata / Altima"></div>
           <div class="fg"><label><span class="req">*</span>سنة الصنع</label>
-            <select id="vyear">
+            <select id="vyear" aria-label="اختر سنة الصنع">
               <option value="">اختر السنة</option>
               <option>2024</option>
               <option>2023</option>
@@ -830,7 +832,7 @@
             </select>
           </div>
           <div class="fg"><label><span class="req">*</span>لون السيارة</label>
-            <select id="vcolor">
+            <select id="vcolor" aria-label="اختر لون السيارة">
               <option value="">اختر اللون</option>
               <option>أبيض</option>
               <option>أسود</option>
@@ -843,7 +845,7 @@
           <div class="fg"><label><span class="req">*</span>رقم اللوحة</label><input type="text" id="vplate"
               placeholder="A 12345 Dubai"></div>
           <div class="fg"><label><span class="req">*</span>عدد المقاعد</label>
-            <select id="vseats">
+            <select id="vseats" aria-label="اختر عدد المقاعد">
               <option value="">اختر</option>
               <option>4</option>
               <option>5</option>
@@ -853,7 +855,7 @@
             </select>
           </div>
           <div class="fg"><label><span class="req">*</span>نوع الوقود</label>
-            <select id="vfuel">
+            <select id="vfuel" aria-label="اختر نوع الوقود">
               <option value="">اختر</option>
               <option>بنزين</option>
               <option>ديزل</option>
@@ -875,19 +877,20 @@
     </div>
 
     <!-- STEP 3: Documents -->
-    <div id="page3" style="display:none">
+    <div id="page3" class="page-hidden">
       <div class="card">
         <div class="card-title">
           <div class="ct-icon">📄</div>الوثائق المطلوبة
         </div>
         <div class="card-sub">يجب رفع جميع الوثائق بصورة واضحة وغير منتهية الصلاحية</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="doc-grid">
 
           <div class="fg">
             <label><span class="req">*</span>رخصة القيادة (وجهان)</label>
             <div class="upload-zone" id="uz1" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz1')">
-              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz1')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz1')"
+                aria-label="ارفع رخصة القيادة">
               <div class="uz-icon">🪪</div>
               <div class="uz-title">اسحب الملف أو انقر للرفع</div>
               <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
@@ -899,7 +902,8 @@
             <label><span class="req">*</span>رخصة المركبة (مستوفاة)</label>
             <div class="upload-zone" id="uz2" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz2')">
-              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz2')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz2')"
+                aria-label="ارفع رخصة المركبة">
               <div class="uz-icon">📋</div>
               <div class="uz-title">اسحب الملف أو انقر للرفع</div>
               <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
@@ -911,7 +915,8 @@
             <label><span class="req">*</span>بطاقة الهوية / الإقامة</label>
             <div class="upload-zone" id="uz3" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz3')">
-              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz3')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz3')"
+                aria-label="ارفع بطاقة الهوية">
               <div class="uz-icon">🆔</div>
               <div class="uz-title">اسحب الملف أو انقر للرفع</div>
               <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
@@ -923,7 +928,8 @@
             <label><span class="req">*</span>تأمين المركبة (ساري)</label>
             <div class="upload-zone" id="uz4" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz4')">
-              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz4')">
+              <input type="file" accept="image/*,.pdf" multiple onchange="handleFiles(this,'uz4')"
+                aria-label="ارفع تأمين المركبة">
               <div class="uz-icon">🛡️</div>
               <div class="uz-title">اسحب الملف أو انقر للرفع</div>
               <div class="uz-sub">JPG, PNG, PDF — حد أقصى 5MB</div>
@@ -935,7 +941,7 @@
             <label>صورة شخصية احترافية</label>
             <div class="upload-zone" id="uz5" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz5')">
-              <input type="file" accept="image/*" onchange="handleFiles(this,'uz5')">
+              <input type="file" accept="image/*" onchange="handleFiles(this,'uz5')" aria-label="ارفع صورة شخصية">
               <div class="uz-icon">🤳</div>
               <div class="uz-title">صورة واضحة للوجه</div>
               <div class="uz-sub">خلفية بيضاء مفضلة</div>
@@ -947,7 +953,8 @@
             <label>شهادة السجل الجنائي</label>
             <div class="upload-zone" id="uz6" ondragover="dragOver(event,this)" ondragleave="dragLeave(this)"
               ondrop="dropFile(event,this,'uz6')">
-              <input type="file" accept="image/*,.pdf" onchange="handleFiles(this,'uz6')">
+              <input type="file" accept="image/*,.pdf" onchange="handleFiles(this,'uz6')"
+                aria-label="ارفع شهادة السجل الجنائي">
               <div class="uz-icon">📜</div>
               <div class="uz-title">شهادة حسن السيرة</div>
               <div class="uz-sub">اختياري — يسرّع عملية القبول</div>
@@ -964,7 +971,7 @@
         <div class="card-sub">لصرف أرباحك مباشرة إلى حسابك</div>
         <div class="form-grid">
           <div class="fg"><label><span class="req">*</span>اسم البنك</label>
-            <select id="bank">
+            <select id="bank" aria-label="اختر البنك">
               <option value="">اختر البنك</option>
               <option>Emirates NBD</option>
               <option>ADCB</option>
@@ -1026,19 +1033,19 @@
 
       <div class="form-nav">
         <button class="btn-back" onclick="goBack(4)">← السابق</button>
-        <button class="btn-next" style="background:#052e16;padding:14px 44px;font-size:15px" onclick="submitForm()">🚀
+        <button class="btn-next btn-submit" onclick="submitForm()">🚀
           إرسال الطلب</button>
       </div>
     </div>
 
     <!-- SUCCESS -->
-    <div id="page5" style="display:none">
+    <div id="page5" class="page-hidden">
       <div class="card success-page">
         <div class="success-icon">🎉</div>
         <h2>تم إرسال طلبك بنجاح!</h2>
-        <p>مرحباً بك في عائلة كريم! سيقوم فريقنا بمراجعة طلبك وسيتواصل معك<br>خلال <strong>24-48 ساعة</strong> عبر
+        <p>مرحباً بك في عائلة TaxiTN! سيقوم فريقنا بمراجعة طلبك وسيتواصل معك<br>خلال <strong>24-48 ساعة</strong> عبر
           البريد الإلكتروني والهاتف.</p>
-        <div style="margin-bottom:24px">
+        <div class="status-container">
           <span class="status-badge status-pending">⏳ قيد المراجعة</span>
         </div>
         <div class="success-steps">
@@ -1055,9 +1062,9 @@
             <div class="sn">تفعيل الحساب والبدء</div>
           </div>
         </div>
-        <div style="background:var(--lt);border-radius:12px;padding:18px;margin-bottom:24px;text-align:right">
-          <div style="font-size:13px;color:var(--gr);margin-bottom:6px">رقم الطلب المرجعي</div>
-          <div style="font-size:22px;font-weight:900;color:var(--g);letter-spacing:2px" id="refNum">DRV-2025-XXXX</div>
+        <div class="ref-box">
+          <div class="ref-label">رقم الطلب المرجعي</div>
+          <div class="ref-number" id="refNum">DRV-2025-XXXX</div>
         </div>
         <button class="btn-next" onclick="toast('سيتم فتح لوحة السائق بعد الموافقة')">متابعة حالة الطلب</button>
       </div>

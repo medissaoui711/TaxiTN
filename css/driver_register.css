@@ -1,0 +1,56 @@
+/* TaxiTN Driver Registration Styles */
+
+/* Progress Bar */
+.progress-fill {
+    width: 25%;
+}
+
+.progress-fill[data-step="2"] { width: 50%; }
+.progress-fill[data-step="3"] { width: 75%; }
+.progress-fill[data-step="4"] { width: 100%; }
+.progress-fill[data-step="5"] { width: 100%; }
+
+/* Hidden Pages */
+.page-hidden {
+    display: none;
+}
+
+/* Document Upload Grid */
+.doc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Submit Button */
+.btn-submit {
+    background: #052e16;
+    padding: 14px 44px;
+    font-size: 15px;
+}
+
+/* Success Page Styles */
+.status-container {
+    margin-bottom: 24px;
+}
+
+.ref-box {
+    background: var(--lt);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 24px;
+    text-align: right;
+}
+
+.ref-label {
+    font-size: 13px;
+    color: var(--gr);
+    margin-bottom: 6px;
+}
+
+.ref-number {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--g);
+    letter-spacing: 2px;
+}
