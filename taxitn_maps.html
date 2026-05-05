@@ -824,6 +824,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/taxitn_maps.css">
 </head>
 
 <body>
@@ -834,12 +835,10 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div>
-          <div class="logo">care<span>em</span></div>
-          <div style="font-size:10px;color:var(--gray);font-weight:600">الخرائط والتتبع المباشر</div>
+          <div class="logo">Taxi<span>TN</span></div>
+          <div class="sidebar-subtitle">الخرائط والتتبع المباشر</div>
         </div>
-        <button id="themeBtn"
-          style="margin-right:auto;padding:7px 14px;border-radius:10px;border:1.5px solid #e5e7eb;background:#fff;font-family:'Tajawal',sans-serif;font-weight:700;font-size:12px;cursor:pointer;"
-          onclick="toggleTheme()">🌙 ليلي</button>
+        <button id="themeBtn" class="theme-btn" onclick="toggleTheme()">🌙 ليلي</button>
       </div>
 
       <div class="sidebar-body">
@@ -859,8 +858,8 @@
               <button class="pin-btn" onclick="pinMap('o')" title="حدد على الخريطة">📌</button>
             </div>
           </div>
-          <div style="display:flex">
-            <div style="width:20px"></div>
+          <div class="loc-connector">
+            <div class="loc-spacer"></div>
             <div class="connector"></div>
           </div>
           <div class="loc-row">
@@ -954,15 +953,15 @@
           <div class="route-summary">
             <h4>تفاصيل المسار</h4>
             <div class="rp">
-              <div class="rp-dot" style="background:var(--green)"></div>
+              <div class="rp-dot rp-dot-green"></div>
               <div>
                 <div class="rp-text" id="trackO">—</div>
                 <div class="rp-sub">نقطة الانطلاق</div>
               </div>
             </div>
-            <div style="width:2px;height:16px;background:#ddd;margin:3px 0 3px 5px"></div>
+            <div class="route-line"></div>
             <div class="rp">
-              <div class="rp-dot" style="background:#ef4444"></div>
+              <div class="rp-dot rp-dot-red"></div>
               <div>
                 <div class="rp-text" id="trackD">—</div>
                 <div class="rp-sub">الوجهة</div>
@@ -980,7 +979,7 @@
 
         <!-- DRIVERS TAB -->
         <div class="tab-panel" id="tab-drivers">
-          <div style="font-size:13px;font-weight:800;margin-bottom:12px">السائقون القريبون</div>
+          <div class="drivers-header">السائقون القريبون</div>
           <div id="driversList"></div>
         </div>
       </div>
@@ -994,7 +993,7 @@
     <div class="map-wrap">
       <div id="map"></div>
       <div class="mode-bar" id="modeBar">
-        <div class="mb-dot" id="modeDot" style="background:var(--green)"></div>
+        <div class="mb-dot mb-dot-green" id="modeDot"></div>
         <span id="modeTxt">انقر على الخريطة</span>
       </div>
       <div class="map-ctrl-tr">
@@ -1075,10 +1074,10 @@
     const ICON_USER = mkIcon('<div class="u-icon">👤</div>', [28, 28]);
     const ICON_DEST = mkIcon('<div class="d-icon"><span>📍</span></div>', [32, 32]);
     function carIcon(deg) {
-      return mkIcon(`<div class="c-icon anim" style="transform:rotate(${deg}deg)">🚗</div>`, [34, 34]);
+      return mkIcon(`<div class="c-icon anim car-icon-rotate" style="transform:rotate(${deg}deg)">🚗</div>`, [34, 34]);
     }
     function miniCarIcon(emoji) {
-      return mkIcon(`<div style="background:#fff;border:2px solid var(--green);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.15)">${emoji}</div>`, [28, 28]);
+      return mkIcon(`<div class="mini-car-icon">${emoji}</div>`, [28, 28]);
     }
 
     // ══════════════════════════════════
@@ -1384,7 +1383,7 @@
         const jLng = d.lng + (Math.random() - .5) * .005;
         const m = L.marker([jLat, jLng], { icon: miniCarIcon(d.emoji) })
           .addTo(G.map)
-          .bindPopup(`<b style="font-family:'Tajawal',sans-serif">${d.name}</b><br>${d.car} · ⭐${d.rating}<br>وصول: ${d.eta}`);
+          .bindPopup(`<b class="popup-name">${d.name}</b><br>${d.car} · ⭐${d.rating}<br>وصول: ${d.eta}`);
         m.on('click', () => hlDriver(i));
         G.driverMarkers.push(m);
         // Gentle drift

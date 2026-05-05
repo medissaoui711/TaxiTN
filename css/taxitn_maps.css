@@ -1,0 +1,95 @@
+/* TaxiTN Maps Styles */
+
+/* Sidebar Header */
+.sidebar-subtitle {
+    font-size: 10px;
+    color: var(--gray);
+    font-weight: 600;
+}
+
+/* Theme Button */
+.theme-btn {
+    margin-right: auto;
+    padding: 7px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* Location Connector */
+.loc-connector {
+    display: flex;
+}
+
+.loc-spacer {
+    width: 20px;
+}
+
+/* Route Dots */
+.rp-dot-green {
+    background: var(--green);
+}
+
+.rp-dot-red {
+    background: #ef4444;
+}
+
+/* Route Line */
+.route-line {
+    width: 2px;
+    height: 16px;
+    background: #ddd;
+    margin: 3px 0 3px 5px;
+}
+
+/* Drivers Section Header */
+.drivers-header {
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+/* Mode Bar Dot */
+.mb-dot-green {
+    background: var(--green);
+}
+
+/* Driver Avatar with dynamic background */
+.drv-av {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* Mini Car Icon */
+.mini-car-icon {
+    background: #fff;
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+}
+
+/* Car Icon with rotation */
+.car-icon-rotate {
+    animation: float 2s ease-in-out infinite;
+}
+
+/* Popup Name Bold */
+.popup-name {
+    font-family: 'Tajawal', sans-serif;
+}
