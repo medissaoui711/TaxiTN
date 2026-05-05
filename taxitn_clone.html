@@ -2080,6 +2080,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/taxitn_clone.css">
 </head>
 
 <body>
@@ -2100,7 +2101,7 @@
     </div>
     <div class="cart-footer">
       <div class="cart-total"><span>المجموع</span><strong id="cartTotal">0 درهم</strong></div>
-      <button class="btn-primary" style="width:100%;padding:15px" onclick="checkout()">إتمام الطلب ←</button>
+      <button class="btn-primary btn-checkout" onclick="checkout()">إتمام الطلب ←</button>
     </div>
   </div>
 
@@ -2118,12 +2119,11 @@
         <div class="form-group"><label>رقم الهاتف أو البريد</label><input type="text" placeholder="+971 5xx xxxx xx">
         </div>
         <div class="form-group"><label>كلمة المرور</label><input type="password" placeholder="••••••••"></div>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:16px;margin-bottom:14px"
-          onclick="doLogin()">تسجيل الدخول</button>
+        <button class="btn-primary btn-large" onclick="doLogin()">تسجيل الدخول</button>
         <div class="divider">أو</div>
-        <button class="app-btn" style="width:100%;justify-content:center;margin-top:14px;border:2px solid #e5e7eb">🍎
+        <button class="app-btn btn-social">🍎
           الدخول بـ Apple</button>
-        <button class="app-btn" style="width:100%;justify-content:center;margin-top:10px;border:2px solid #e5e7eb">🤖
+        <button class="app-btn btn-social-google">🤖
           الدخول بـ Google</button>
       </div>
       <div id="registerForm" class="hidden">
@@ -2137,7 +2137,7 @@
         <div class="form-group"><label>البريد الإلكتروني</label><input type="email" placeholder="email@example.com">
         </div>
         <div class="form-group"><label>كلمة المرور</label><input type="password" placeholder="••••••••"></div>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="doRegister()">إنشاء
+        <button class="btn-primary btn-large" onclick="doRegister()">إنشاء
           الحساب</button>
       </div>
     </div>
@@ -2145,22 +2145,22 @@
 
   <!-- RIDE MODAL -->
   <div class="modal-overlay" id="rideModal">
-    <div class="modal-box" style="max-width:500px">
+    <div class="modal-box modal-box-large">
       <button class="modal-close" onclick="closeModal('rideModal')">✕</button>
       <h3>🚗 تأكيد الرحلة</h3>
       <p>سائقك في الطريق إليك</p>
-      <div style="text-align:center;padding:30px 0">
-        <div style="font-size:70px;animation:float 2s ease-in-out infinite">🚗</div>
-        <div style="font-size:18px;font-weight:700;margin:14px 0">جاري البحث عن سائق...</div>
-        <div style="color:var(--gray);font-size:14px">الوقت المتوقع: 4–8 دقائق</div>
-        <div style="margin-top:24px;background:var(--light);border-radius:14px;padding:20px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px"><span>محمد – ⭐
+      <div class="ride-animation">
+        <div class="ride-car-icon">🚗</div>
+        <div class="ride-status-text">جاري البحث عن سائق...</div>
+        <div class="ride-eta">الوقت المتوقع: 4–8 دقائق</div>
+        <div class="ride-info-box">
+          <div class="ride-info-row"><span>محمد – ⭐
               4.9</span><span>Toyota Camry 2023</span></div>
-          <div style="font-size:28px;font-weight:900;color:var(--green)" id="ridePrice">AED 24</div>
+          <div class="ride-price" id="ridePrice">AED 24</div>
         </div>
       </div>
-      <button class="btn-primary" style="width:100%;padding:14px;font-size:16px"
-        onclick="closeModal('rideModal');showToast('تم تأكيد الرحلة!','🎉')">تأكيد الحجز</button>
+      <button class="btn-primary btn-large" onclick="closeModal('rideModal');showToast('تم تأكيد الرحلة!','🎉')">تأكيد
+        الحجز</button>
     </div>
   </div>
 
@@ -2170,39 +2170,37 @@
       <button class="modal-close" onclick="closeModal('payModal')">✕</button>
       <h3>💳 إتمام الدفع</h3>
       <p>اختر طريقة الدفع</p>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
-        <div class="p-menu-item" style="border-radius:12px;border:2px solid var(--green);background:var(--green-light)"
-          onclick="selectPayMethod(this)"><span style="font-size:20px">💳</span> TaxiTN Pay – رصيد 240 درهم</div>
-        <div class="p-menu-item" style="border-radius:12px;border:2px solid #e5e7eb" onclick="selectPayMethod(this)">
-          <span style="font-size:20px">🏦</span> بطاقة ائتمانية
+      <div class="pay-methods">
+        <div class="p-menu-item p-menu-item-selected">
+          onclick="selectPayMethod(this)"><span class="pay-icon">💳</span> TaxiTN Pay – رصيد 240 درهم</div>
+        <div class="p-menu-item p-menu-item-default"> onclick="selectPayMethod(this)">
+          <span class="pay-icon">🏦</span> بطاقة ائتمانية
         </div>
-        <div class="p-menu-item" style="border-radius:12px;border:2px solid #e5e7eb" onclick="selectPayMethod(this)">
-          <span style="font-size:20px">💵</span> الدفع نقداً
+        <div class="p-menu-item p-menu-item-default"> onclick="selectPayMethod(this)">
+          <span class="pay-icon">💵</span> الدفع نقداً
         </div>
       </div>
-      <button class="btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="confirmPay()">تأكيد
+      <button class="btn-primary btn-large" onclick="confirmPay()">تأكيد
         الدفع</button>
     </div>
   </div>
 
   <!-- SUBSCRIBE MODAL -->
   <div class="modal-overlay" id="subscribeModal">
-    <div class="modal-box" style="max-width:420px">
+    <div class="modal-box modal-box-medium">
       <button class="modal-close" onclick="closeModal('subscribeModal')">✕</button>
-      <div style="text-align:center">
-        <div style="font-size:60px;margin-bottom:14px">⭐</div>
+      <div class="text-center">
+        <div class="subscribe-icon">⭐</div>
         <h3 id="planTitle">TaxiTN Plus – شهري</h3>
-        <div style="font-size:36px;font-weight:900;color:#FFD700;margin:10px 0" id="planPriceDisplay">AED 49</div>
-        <p style="color:var(--gray);margin-bottom:24px">يُجدَّد تلقائياً · يمكنك الإلغاء في أي وقت</p>
+        <div class="subscribe-price" id="planPriceDisplay">AED 49</div>
+        <p class="subscribe-note">يُجدَّد تلقائياً · يمكنك الإلغاء في أي وقت</p>
       </div>
       <div class="form-group"><label>رقم البطاقة</label><input type="text" placeholder="•••• •••• •••• ••••"></div>
       <div class="form-row">
         <div class="form-group"><label>تاريخ الانتهاء</label><input type="text" placeholder="MM/YY"></div>
         <div class="form-group"><label>CVV</label><input type="text" placeholder="•••"></div>
       </div>
-      <button class="btn-primary"
-        style="width:100%;padding:14px;font-size:16px;background:#FFD700;color:#1a1a1a;box-shadow:0 4px 15px rgba(255,215,0,.3)"
-        onclick="confirmSubscribe()">اشترك الآن ⭐</button>
+      <button class="btn-primary btn-gold" onclick="confirmSubscribe()">اشترك الآن ⭐</button>
     </div>
   </div>
 
@@ -2491,7 +2489,7 @@
         </div>
         <div class="price-estimate"><span class="pe-label">التكلفة المتوقعة</span><span class="pe-price"
             id="estimatedPrice">AED 24</span></div>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:16px" onclick="bookRide()">احجز الآن
+        <button class="btn-primary btn-large" onclick="bookRide()">احجز الآن
           ←</button>
       </div>
     </div>
@@ -2884,8 +2882,8 @@
             <option>51–200 موظف</option>
             <option>200+ موظف</option>
           </select></div>
-        <button class="btn-primary" style="width:100%;padding:14px;font-size:16px"
-          onclick="showToast('سيتواصل فريقنا خلال 24 ساعة 📞','✅')">احجز عرض توضيحي</button>
+        <button class="btn-primary btn-large" onclick="showToast('سيتواصل فريقنا خلال 24 ساعة 📞','✅')">احجز عرض
+          توضيحي</button>
       </div>
     </div>
     <div class="biz-features">

@@ -1,0 +1,139 @@
+/* TaxiTN Clone - External CSS Styles */
+
+/* Full Width Buttons */
+.btn-full {
+    width: 100%;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+}
+
+.btn-checkout {
+    width: 100%;
+    padding: 15px;
+}
+
+/* Modal Styles */
+.modal-box-large {
+    max-width: 500px;
+}
+
+.modal-box-medium {
+    max-width: 420px;
+}
+
+/* Payment Method Items */
+.p-menu-item-selected {
+    border-radius: 12px;
+    border: 2px solid var(--green);
+    background: var(--green-light);
+}
+
+.p-menu-item-default {
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+}
+
+/* Payment Icons */
+.pay-icon {
+    font-size: 20px;
+}
+
+/* Ride Modal */
+.ride-animation {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.ride-car-icon {
+    font-size: 70px;
+    animation: float 2s ease-in-out infinite;
+}
+
+.ride-status-text {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 14px 0;
+}
+
+.ride-eta {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.ride-info-box {
+    margin-top: 24px;
+    background: var(--light);
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.ride-info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ride-price {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--green);
+}
+
+/* Subscribe Modal */
+.subscribe-icon {
+    font-size: 60px;
+    margin-bottom: 14px;
+}
+
+.subscribe-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: #FFD700;
+    margin: 10px 0;
+}
+
+.subscribe-note {
+    color: var(--gray);
+    margin-bottom: 24px;
+}
+
+.btn-gold {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    background: #FFD700;
+    color: #1a1a1a;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, .3);
+}
+
+/* Payment Methods Container */
+.pay-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Social Login Buttons */
+.btn-social {
+    width: 100%;
+    justify-content: center;
+    margin-top: 14px;
+    border: 2px solid #e5e7eb;
+}
+
+.btn-social-google {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+    border: 2px solid #e5e7eb;
+}
+
+/* Text Center */
+.text-center {
+    text-align: center;
+}
